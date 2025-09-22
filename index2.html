@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Investigatory Project: Weather Impact on Local Agriculture</title>
+    <!-- Include Chart.js via CDN for simple graphing (beginner-friendly, no complex setup needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* CSS for styling: Dark blue palette. Main background: dark navy (#001f3f). 
+           Sections: lighter blue (#003366) for contrast. Text: light gray/white (#f0f8ff). 
+           Accents: sky blue (#87ceeb) for links/buttons. 
+           Responsive: Uses flexbox for layout, media queries for mobile. */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #001f3f; /* Dark navy blue */
+            color: #f0f8ff; /* Alice blue for readability */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #003366; /* Medium dark blue */
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        h1 {
+            margin: 0;
+            color: #87ceeb; /* Sky blue accent */
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Responsive: wraps on small screens */
+            gap: 1rem;
+        }
+        nav a {
+            color: #87ceeb;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s; /* Smooth hover effect */
+        }
+        nav a:hover {
+            background-color: #004080; /* Slightly lighter blue on hover */
+        }
+        section {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #003366; /* Lighter section background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        h2 {
+            color: #87ceeb;
+            border-bottom: 2px solid #87ceeb;
+            padding-bottom: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background-color: #001f3f;
+        }
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border: 1px solid #87ceeb;
+        }
+        th {
+            background-color: #004080;
+        }
+        canvas {
+            max-width: 100%;
+            height: 400px; /* Fixed height for chart, responsive width */
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 300px;
+        }
+        input[type="number"] {
+            padding: 0.5rem;
+            border: 1px solid #87ceeb;
+            border-radius: 5px;
+            background-color: #001f3f;
+            color: #f0f8ff;
+        }
+        button {
+            padding: 0.5rem;
+            background-color: #87ceeb;
+            color: #001f3f;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5dade2; /* Lighter blue on hover */
+        }
+        #output {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #004080;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        /* Responsive design: Adjust padding and font sizes on small screens */
+        @media (max-width: 768px) {
+            section {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            canvas {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Physics Investigatory Project: Understanding Weather Impact on Local Agriculture</h1>
+        <h2>Case Scenario 2: Temperature and Pressure in Greenhouses</h2>
+        <nav>
+            <ul>
+                <li><a href="#concepts">Related Concepts</a></li>
+                <li><a href="#calculations">Calculations</a></li>
+                <li><a href="#graphs">Graphs</a></li>
+                <li><a href="#calculator">Pressure Calculator</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="concepts">
+        <h2>Related Concepts</h2>
+        <p>
+            The <strong>Ideal Gas Law</strong> is a fundamental principle in physics that describes the behavior of gases under varying conditions. It is expressed as:
+        </p>
+        <!-- Inline LaTeX for inline math -->
+        <p><strong>PV = nRT</strong>, where <span style="white-space: nowrap;">$P$</span> is pressure, <span style="white-space: nowrap;">$V$</span> is volume, <span style="white-space: nowrap;">$n$</span> is the number of moles, <span style="white-space: nowrap;">$R$</span> is the gas constant, and <span style="white-space: nowrap;">$T$</span> is temperature in Kelvin.</p>
+        <p>
+            In the context of a greenhouse, temperature and pressure are closely related. As temperature increases (e.g., due to weather changes like rising sunlight or heatwaves), the pressure inside the greenhouse can rise if volume and the amount of gas are held constant. This relationship is particularly important for local agriculture, as higher pressures can affect plant growth, humidity levels, and ventilation needs. For instance, extreme weather impacting temperature can lead to pressure buildup, potentially stressing crops or requiring automated systems to maintain optimal conditions.
+        </p>
+        <!-- Suggestion for interactivity: Add a simple expandable FAQ using JS (see JS section) -->
+        <details>
+            <summary>Why is this relevant to agriculture?</summary>
+            <p>Weather-induced temperature fluctuations can alter greenhouse pressure, influencing CO2 levels and photosynthesis rates, which directly impact crop yield.</p>
+        </details>
+    </section>
+
+    <section id="calculations">
+        <h2>Calculations</h2>
+        <p>Below is the dataset collected for temperatures and corresponding pressures in a simulated greenhouse environment.</p>
+        <table id="dataset">
+            <thead>
+                <tr>
+                    <th>Temperature (°C)</th>
+                    <th>Pressure (kPa)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dataset will be populated by JavaScript for dynamic insertion -->
+            </tbody>
+        </table>
+        <div id="stats">
+            <!-- Statistics (mean, variance, std dev) will be inserted here by JS -->
+        </div>
+        <div id="regression">
+            <!-- Regression equation and explanation inserted by JS -->
+        </div>
+    </section>
+
+    <section id="graphs">
+        <h2>Graphs</h2>
+        <p>This section visualizes the dataset as a scatter plot with the linear regression line overlaid. We're using Chart.js, a beginner-friendly library. To implement: Include the CDN in HTML, then use JS to create a canvas and chart object.</p>
+        <canvas id="pressureChart"></canvas>
+    </section>
+
+    <section id="calculator">
+        <h2>Pressure Calculator</h2>
+        <p>Enter a temperature in °C to calculate the predicted pressure using the linear regression formula.</p>
+        <form id="calcForm">
+            <label for="tempInput">Temperature (°C):</label>
+            <input type="number" id="tempInput" step="0.1" min="0" max="100" required>
+            <button type="submit">Calculate Pressure</button>
+        </form>
+        <div id="output"></div>
+    </section>
+
+    <script>
+        // JavaScript code: Handles calculations, graphing, calculator, and smooth scrolling.
+        // All computations are done here for simplicity. Data is predefined.
+
+        // Dataset
+        const temperatures = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
+        const pressures = [101.3, 104.2, 107.1, 110.0, 112.9, 115.8, 118.7, 121.6, 124.5, 127.4];
+        const n = temperatures.length;
+
+        // Function to populate dataset table
+        function populateDataset() {
+            const tbody = document.querySelector('#dataset tbody');
+            tbody.innerHTML = ''; // Clear existing
+            temperatures.forEach((temp, index) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = temp;
+                row.insertCell(1).textContent = pressures[index];
+            });
+        }
+
+        // Calculate mean of pressures
+        function calculateMean(data) {
+            return data.reduce((sum, val) => sum + val, 0) / data.length;
+        }
+
+        // Calculate variance of pressures
+        function calculateVariance(data, mean) {
+            return data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / data.length;
+        }
+
+        // Calculate standard deviation
+        function calculateStdDev(variance) {
+            return Math.sqrt(variance);
+        }
+
+        // Linear regression: slope (m) and intercept (b) for P = m*T + b
+        function linearRegression(x, y) {
+            const sumX = x.reduce((sum, val) => sum + val, 0);
+            const sumY = y.reduce((sum, val) => sum + val, 0);
+            const sumXY = x.reduce((sum, val, i) => sum + val * y[i], 0);
+            const sumX2 = x.reduce((sum, val) => sum + val * val, 0);
+            const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            const b = (sumY - m * sumX) / n;
+            return { slope: m, intercept: b };
+        }
+
+        // Populate calculations section
+        function populateCalculations() {
+            const mean = calculateMean(pressures);
+            const variance = calculateVariance(pressures, mean);
+            const stdDev = calculateStdDev(variance);
+            const regression = linearRegression(temperatures, pressures);
+
+            // Insert stats
+            document.getElementById('stats').innerHTML = `
+                <h3>Statistics for Pressure Values:</h3>
+                <p>Mean: ${mean.toFixed(2)} kPa</p>
+                <p>Variance: ${variance.toFixed(2)} kPa²</p>
+                <p>Standard Deviation: ${stdDev.toFixed(2)} kPa</p>
+            `;
+
+            // Insert regression
+            document.getElementById('regression').innerHTML = `
+                <h3>Linear Regression:</h3>
+                <p>Equation: <span style="white-space: nowrap;">$P = ${regression.slope.toFixed(4)}T + ${regression.intercept.toFixed(2)}$</span> (where P is pressure in kPa, T is temperature in °C)</p>
+                <p><strong>Physical Meaning:</strong> The slope (${regression.slope.toFixed(4)} kPa/°C) represents the rate of pressure increase per degree Celsius rise in temperature, reflecting the Ideal Gas Law's prediction of expansion/pressure buildup in a fixed-volume greenhouse. The intercept (${regression.intercept.toFixed(2)} kPa) is the baseline pressure at 0°C, akin to standard atmospheric pressure adjusted for the environment.</p>
+            `;
+        }
+
+        // Create graph using Chart.js (simple for beginners: just define data and options)
+        function createGraph() {
+            const ctx = document.getElementById('pressureChart').getContext('2d');
+            const regression = linearRegression(temperatures, pressures);
+
+            // Generate points for regression line
+            const lineTemps = [0, 90]; // From min to max temp
+            const linePressures = lineTemps.map(t => regression.slope * t + regression.intercept);
+
+            new Chart(ctx, {
+                type: 'scatter', // Scatter for data points
+                data: {
+                    datasets: [{
+                        label: 'Data Points',
+                        data: temperatures.map((t, i) => ({ x: t, y: pressures[i] })),
+                        backgroundColor: '#87ceeb',
+                        borderColor: '#87ceeb'
+                    }, {
+                        type: 'line', // Line for regression
+                        label: 'Regression Line',
+                        data: lineTemps.map((t, i) => ({ x: t, y: linePressures[i] })),
+                        borderColor: '#f0f8ff',
+                        backgroundColor: 'transparent',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: 'Temperature (°C)', color: '#f0f8ff' } },
+                        y: { title: { display: true, text: 'Pressure (kPa)', color: '#f0f8ff' } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#f0f8ff' } }
+                    }
+                }
+            });
+        }
+
+        // Pressure calculator
+        document.getElementById('calcForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const temp = parseFloat(document.getElementById('tempInput').value);
+            const regression = linearRegression(temperatures, pressures);
+            const pressure = regression.slope * temp + regression.intercept;
+            document.getElementById('output').innerHTML = `
+                <p>Predicted Pressure at ${temp}°C: ${pressure.toFixed(2)} kPa</p>
+            `;
+        });
+
+        // Smooth scrolling for navigation links (polish: makes site feel modern)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Initialize everything on page load
+        window.addEventListener('load', () => {
+            populateDataset();
+            populateCalculations();
+            createGraph();
+        });
+
+        // Styling/Interactivity Suggestions:
+        // 1. Added hover effects on nav and buttons for polish.
+        // 2. Used <details>/<summary> for expandable content in concepts (native HTML, no JS needed).
+        // 3. For more interactivity: Add animations (e.g., via CSS @keyframes) or tooltips on graph points using Chart.js plugins.
+        // 4. Responsive: Tested for mobile; flexbox ensures layout adapts.
+        // 5. To edit: Modify datasets in JS, tweak colors in CSS, or extend Chart.js options for custom graphs.
+    </script>
+</body>
+</html>
